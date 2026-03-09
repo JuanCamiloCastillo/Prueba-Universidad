@@ -86,8 +86,8 @@ builder.Services.AddRateLimiter(options =>
         var userId = context.User?.FindFirst("studentId")?.Value ?? context.Connection.RemoteIpAddress?.ToString() ?? "anonymous";
         return RateLimitPartition.GetFixedWindowLimiter(userId, _ => new FixedWindowRateLimiterOptions
         {
-            PermitLimit = 100,
-            Window = TimeSpan.FromMinutes(1),
+            PermitLimit = 10,
+            Window = TimeSpan.FromSeconds(1),
             QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
             QueueLimit = 0
         });
