@@ -81,13 +81,15 @@ builder.Services.AddCors(options =>
 // Rate Limiting
 builder.Services.AddRateLimiter(options =>
 {
+    var permitLimit = builder.Configuration.GetValue<int?>("RateLimitSettings:PermitLimit") ?? 10;
+    var windowSeconds = builder.Configuration.GetValue<int?>("RateLimitSettings:WindowSeconds") ?? 1;
     options.AddPolicy("PerUserPolicy", context =>
     {
         var userId = context.User?.FindFirst("studentId")?.Value ?? context.Connection.RemoteIpAddress?.ToString() ?? "anonymous";
         return RateLimitPartition.GetFixedWindowLimiter(userId, _ => new FixedWindowRateLimiterOptions
         {
-            PermitLimit = 10,
-            Window = TimeSpan.FromSeconds(1),
+            PermitLimit = permitLimit,
+            Window = TimeSpan.FromSeconds(windowSeconds),
             QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
             QueueLimit = 0
         });

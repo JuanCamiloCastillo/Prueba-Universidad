@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using StudentEnrollment.Application.Interfaces;
 
@@ -9,11 +10,14 @@ public class CacheService : ICacheService
 {
     private readonly IDistributedCache _cache;
     private readonly ILogger<CacheService> _logger;
+    private readonly TimeSpan _defaultExpiration;
 
-    public CacheService(IDistributedCache cache, ILogger<CacheService> logger)
+    public CacheService(IDistributedCache cache, ILogger<CacheService> logger, IConfiguration configuration)
     {
         _cache = cache;
         _logger = logger;
+        var minutes = configuration.GetValue<int?>("CacheSettings:DefaultExpirationMinutes") ?? 5;
+        _defaultExpiration = TimeSpan.FromMinutes(minutes);
     }
 
     public async Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
@@ -38,7 +42,7 @@ public class CacheService : ICacheService
     {
         var options = new DistributedCacheEntryOptions
         {
-            AbsoluteExpirationRelativeToNow = expiry ?? TimeSpan.FromMinutes(5)
+            AbsoluteExpirationRelativeToNow = expiry ?? _defaultExpiration
         };
         await _cache.SetStringAsync(key, JsonSerializer.Serialize(value), options, ct);
     }

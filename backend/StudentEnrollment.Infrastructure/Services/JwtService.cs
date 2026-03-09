@@ -32,11 +32,12 @@ public class JwtService : IJwtService
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
+        var expirationHours = int.TryParse(jwtSettings["TokenExpirationHours"], out var h) ? h : 8;
         var token = new JwtSecurityToken(
             issuer: jwtSettings["Issuer"],
             audience: jwtSettings["Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddHours(8),
+            expires: DateTime.UtcNow.AddHours(expirationHours),
             signingCredentials: credentials
         );
 

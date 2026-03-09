@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "XQh+l7EKRRU=",
+  "dgSpecHash": "/OEvdglnJeI=",
   "success": true,
   "projectFilePath": "/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.API/StudentEnrollment.API.csproj",
   "expectedPackageFiles": [
@@ -33,6 +33,7 @@
     "/tmp/codeql-scratch-e22a404cc994e7ad/dbs/csharp/working/packages/microsoft.extensions.caching.memory/8.0.0/microsoft.extensions.caching.memory.8.0.0.nupkg.sha512",
     "/tmp/codeql-scratch-e22a404cc994e7ad/dbs/csharp/working/packages/microsoft.extensions.caching.stackexchangeredis/8.0.0/microsoft.extensions.caching.stackexchangeredis.8.0.0.nupkg.sha512",
     "/tmp/codeql-scratch-e22a404cc994e7ad/dbs/csharp/working/packages/microsoft.extensions.configuration.abstractions/8.0.0/microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512",
+    "/tmp/codeql-scratch-e22a404cc994e7ad/dbs/csharp/working/packages/microsoft.extensions.configuration.binder/8.0.0/microsoft.extensions.configuration.binder.8.0.0.nupkg.sha512",
     "/tmp/codeql-scratch-e22a404cc994e7ad/dbs/csharp/working/packages/microsoft.extensions.dependencyinjection/8.0.0/microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
     "/tmp/codeql-scratch-e22a404cc994e7ad/dbs/csharp/working/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.0/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
     "/tmp/codeql-scratch-e22a404cc994e7ad/dbs/csharp/working/packages/microsoft.extensions.dependencymodel/8.0.0/microsoft.extensions.dependencymodel.8.0.0.nupkg.sha512",
