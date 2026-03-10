@@ -1,0 +1,16 @@
+/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Application/bin/Debug/net8.0/StudentEnrollment.Application.deps.json
+/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Application/bin/Debug/net8.0/StudentEnrollment.Application.dll
+/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Application/bin/Debug/net8.0/StudentEnrollment.Application.pdb
+/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Application/bin/Debug/net8.0/StudentEnrollment.Domain.dll
+/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Application/bin/Debug/net8.0/StudentEnrollment.Domain.pdb
+/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Application/obj/Debug/net8.0/StudentEnrollment.Application.csproj.AssemblyReference.cache
+/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Application/obj/Debug/net8.0/StudentEnrollment.Application.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Application/obj/Debug/net8.0/StudentEnrollment.Application.AssemblyInfoInputs.cache
+/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Application/obj/Debug/net8.0/StudentEnrollment.Application.AssemblyInfo.cs
+/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Application/obj/Debug/net8.0/StudentEnrollment.Application.csproj.CoreCompileInputs.cache
+/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Application/obj/Debug/net8.0/StudentEnrollment.Application.sourcelink.json
+/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Application/obj/Debug/net8.0/StudentE.E558B414.Up2Date
+/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Application/obj/Debug/net8.0/StudentEnrollment.Application.dll
+/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Application/obj/Debug/net8.0/refint/StudentEnrollment.Application.dll
+/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Application/obj/Debug/net8.0/StudentEnrollment.Application.pdb
+/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Application/obj/Debug/net8.0/ref/StudentEnrollment.Application.dll
