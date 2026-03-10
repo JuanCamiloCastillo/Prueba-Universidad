@@ -21,5 +21,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /out .
 EXPOSE 8080
-ENV ASPNETCORE_URLS=http://+:8080
-ENTRYPOINT ["dotnet", "StudentEnrollment.API.dll"]
+# Railway asigna el puerto via $PORT en tiempo de ejecución.
+# Si no existe $PORT (local), usa 8080 por defecto.
+ENTRYPOINT ["/bin/sh", "-c", "ASPNETCORE_URLS=http://+:${PORT:-8080} dotnet StudentEnrollment.API.dll"]
