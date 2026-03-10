@@ -1,0 +1,20 @@
+# Directorios de compilación — no necesitan estar en la imagen
+**/bin/
+**/obj/
+
+# Archivos de Visual Studio
+.vs/
+*.user
+*.suo
+
+# Configuración local con credenciales — nunca va en la imagen
+**/appsettings.Development.json
+
+# Git
+.git/
+.gitignore
+
+# Documentación y scripts de BD
+*.sql
+*.md
+*.docx
