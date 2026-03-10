@@ -1,11 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "2ZzKwTgihMw=",
+  "dgSpecHash": "iFsjXmRFyco=",
   "success": true,
-  "projectFilePath": "/home/runner/work/Prueba-Universidad/Prueba-Universidad/backend/StudentEnrollment.Domain/StudentEnrollment.Domain.csproj",
-  "expectedPackageFiles": [
-    "/tmp/codeql-scratch-e22a404cc994e7ad/dbs/csharp/working/packages/microsoft.netcore.app.ref/8.0.23/microsoft.netcore.app.ref.8.0.23.nupkg.sha512",
-    "/tmp/codeql-scratch-e22a404cc994e7ad/dbs/csharp/working/packages/microsoft.aspnetcore.app.ref/8.0.23/microsoft.aspnetcore.app.ref.8.0.23.nupkg.sha512"
-  ],
+  "projectFilePath": "C:\\Users\\j.castillo\\source\\repos\\Prueba-Universidad\\backend\\StudentEnrollment.Domain\\StudentEnrollment.Domain.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }

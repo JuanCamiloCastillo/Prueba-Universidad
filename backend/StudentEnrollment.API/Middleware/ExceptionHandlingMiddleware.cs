@@ -5,14 +5,14 @@ using StudentEnrollment.Domain.Exceptions;
 
 namespace StudentEnrollment.API.Middleware;
 
-public class ExceptionHandlingMiddleware
+public class MiddlewareExcepciones
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<ExceptionHandlingMiddleware> _logger;
+    private readonly RequestDelegate _siguiente;
+    private readonly ILogger<MiddlewareExcepciones> _logger;
 
-    public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+    public MiddlewareExcepciones(RequestDelegate siguiente, ILogger<MiddlewareExcepciones> logger)
     {
-        _next = next;
+        _siguiente = siguiente;
         _logger = logger;
     }
 
@@ -20,16 +20,16 @@ public class ExceptionHandlingMiddleware
     {
         try
         {
-            await _next(context);
+            await _siguiente(context);
         }
         catch (ValidationException ex)
         {
             context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             context.Response.ContentType = "application/json";
-            var errors = ex.Errors.Select(e => new { e.PropertyName, e.ErrorMessage });
-            await context.Response.WriteAsync(JsonSerializer.Serialize(new { errors }));
+            var errores = ex.Errors.Select(e => new { e.PropertyName, e.ErrorMessage });
+            await context.Response.WriteAsync(JsonSerializer.Serialize(new { errores }));
         }
-        catch (DomainException ex)
+        catch (ExcepcionDominio ex)
         {
             context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             context.Response.ContentType = "application/json";
@@ -49,10 +49,10 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unhandled exception");
+            _logger.LogError(ex, "Excepción no controlada");
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(JsonSerializer.Serialize(new { error = "An unexpected error occurred." }));
+            await context.Response.WriteAsync(JsonSerializer.Serialize(new { error = "Ocurrió un error inesperado." }));
         }
     }
 }

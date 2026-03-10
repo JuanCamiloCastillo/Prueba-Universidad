@@ -8,19 +8,19 @@ using StudentEnrollment.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Application + Infrastructure layers
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
+// Capas de aplicación e infraestructura
+builder.Services.AgregarAplicacion();
+builder.Services.AgregarInfraestructura(builder.Configuration);
 
-// Controllers
+// Controladores
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = "StudentEnrollment API", Version = "v1" });
+    c.SwaggerDoc("v1", new() { Title = "API de Inscripción Estudiantil", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme.",
+        Description = "Encabezado de autorización JWT usando el esquema Bearer.",
         Name = "Authorization",
         In = Microsoft.OpenApi.Models.ParameterLocation.Header,
         Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
@@ -42,9 +42,9 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// JWT Authentication
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JwtSettings:SecretKey is required.");
+// Autenticación JWT
+var configuracionJwt = builder.Configuration.GetSection("JwtSettings");
+var claveSecreta = configuracionJwt["SecretKey"] ?? throw new InvalidOperationException("Se requiere JwtSettings:SecretKey.");
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -55,11 +55,11 @@ builder.Services.AddAuthentication(options =>
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(claveSecreta)),
         ValidateIssuer = true,
-        ValidIssuer = jwtSettings["Issuer"],
+        ValidIssuer = configuracionJwt["Issuer"],
         ValidateAudience = true,
-        ValidAudience = jwtSettings["Audience"],
+        ValidAudience = configuracionJwt["Audience"],
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero
     };
@@ -70,7 +70,7 @@ builder.Services.AddAuthorization();
 // CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("FrontendPolicy", policy =>
+    options.AddPolicy("PoliticaFrontend", policy =>
     {
         policy.WithOrigins(builder.Configuration["AllowedOrigins"] ?? "http://localhost:4200")
               .AllowAnyHeader()
@@ -78,18 +78,18 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Rate Limiting
+// Limitación de tasa
 builder.Services.AddRateLimiter(options =>
 {
-    var permitLimit = builder.Configuration.GetValue<int?>("RateLimitSettings:PermitLimit") ?? 10;
-    var windowSeconds = builder.Configuration.GetValue<int?>("RateLimitSettings:WindowSeconds") ?? 1;
-    options.AddPolicy("PerUserPolicy", context =>
+    var limitePermitido = builder.Configuration.GetValue<int?>("RateLimitSettings:PermitLimit") ?? 10;
+    var segundosVentana = builder.Configuration.GetValue<int?>("RateLimitSettings:WindowSeconds") ?? 1;
+    options.AddPolicy("PoliticaPorUsuario", context =>
     {
-        var userId = context.User?.FindFirst("studentId")?.Value ?? context.Connection.RemoteIpAddress?.ToString() ?? "anonymous";
-        return RateLimitPartition.GetFixedWindowLimiter(userId, _ => new FixedWindowRateLimiterOptions
+        var idUsuario = context.User?.FindFirst("studentId")?.Value ?? context.Connection.RemoteIpAddress?.ToString() ?? "anonimo";
+        return RateLimitPartition.GetFixedWindowLimiter(idUsuario, _ => new FixedWindowRateLimiterOptions
         {
-            PermitLimit = permitLimit,
-            Window = TimeSpan.FromSeconds(windowSeconds),
+            PermitLimit = limitePermitido,
+            Window = TimeSpan.FromSeconds(segundosVentana),
             QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
             QueueLimit = 0
         });
@@ -106,11 +106,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("FrontendPolicy");
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseCors("PoliticaFrontend");
+app.UseMiddleware<MiddlewareExcepciones>();
 app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers().RequireRateLimiting("PerUserPolicy");
+app.MapControllers().RequireRateLimiting("PoliticaPorUsuario");
 
 app.Run();
