@@ -6,14 +6,17 @@ COPY backend/StudentEnrollment.Application/StudentEnrollment.Application.csproj 
 COPY backend/StudentEnrollment.Infrastructure/StudentEnrollment.Infrastructure.csproj backend/StudentEnrollment.Infrastructure/
 COPY backend/StudentEnrollment.API/StudentEnrollment.API.csproj                   backend/StudentEnrollment.API/
 
-RUN dotnet restore backend/StudentEnrollment.API/StudentEnrollment.API.csproj
+RUN dotnet restore backend/StudentEnrollment.API/StudentEnrollment.API.csproj \
+    --packages /root/.nuget/packages \
+    /p:RestoreFallbackFolders=clear
 
 COPY backend/ backend/
 
 RUN dotnet publish backend/StudentEnrollment.API/StudentEnrollment.API.csproj \
     -c Release \
     -o /out \
-    --no-restore
+    --no-restore \
+    /p:RestoreFallbackFolders=clear
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
