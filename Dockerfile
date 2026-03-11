@@ -23,4 +23,4 @@ COPY --from=build /out ./out
 EXPOSE 8080
 # Railway asigna el puerto via $PORT en tiempo de ejecución.
 # Si no existe $PORT (local), usa 8080 por defecto.
-ENTRYPOINT ["/bin/sh", "-c", "ASPNETCORE_URLS=http://+:${PORT:-8080} dotnet out/StudentEnrollment.API.dll"]
+ENTRYPOINT ["/bin/sh", "-c", "cd out && ASPNETCORE_URLS=http://+:${PORT:-8080} dotnet StudentEnrollment.API.dll"]
