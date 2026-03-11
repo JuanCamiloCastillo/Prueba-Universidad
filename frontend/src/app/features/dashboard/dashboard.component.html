@@ -1,7 +1,7 @@
 <div class="page-container">
   <div class="page-header">
     @if (student(); as s) {
-      <h1>Bienvenido, <span class="text-primary">{{ s.nombre }}</span> 👋</h1>
+      <h1>Bienvenido, <span class="text-primary">{{ s.nombre }}</span></h1>
       <p class="text-muted">{{ s.email }}</p>
     }
   </div>
@@ -9,15 +9,13 @@
   <!-- Tarjetas de resumen -->
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-card__icon">📚</div>
-      <div class="stat-card__info">
+        <div class="stat-card__info">
         <span class="stat-card__value">{{ enrolledCount() }} / {{ maxSubjects }}</span>
         <span class="stat-card__label">Materias matriculadas</span>
       </div>
     </div>
 
     <div class="stat-card">
-      <div class="stat-card__icon">⭐</div>
       <div class="stat-card__info">
         <span class="stat-card__value">{{ totalCredits() }} / {{ maxCredits }}</span>
         <span class="stat-card__label">Créditos acumulados</span>
@@ -25,7 +23,6 @@
     </div>
 
     <div class="stat-card">
-      <div class="stat-card__icon">🔓</div>
       <div class="stat-card__info">
         <span class="stat-card__value">{{ maxSubjects - enrolledCount() }}</span>
         <span class="stat-card__label">Cupos disponibles</span>
@@ -70,7 +67,7 @@
           <div class="enrollment-item">
             <div class="enrollment-item__info">
               <h3 class="enrollment-item__name">{{ enrollment.nombreAsignatura }}</h3>
-              <p class="enrollment-item__professor">👤 {{ enrollment.nombreProfesor }}</p>
+              <p class="enrollment-item__professor">{{ enrollment.nombreProfesor }}</p>
             </div>
             <div class="enrollment-item__right">
               <span class="badge badge--credits">3 créditos</span>

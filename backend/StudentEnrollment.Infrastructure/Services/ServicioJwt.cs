@@ -28,6 +28,7 @@ public class ServicioJwt : IServicioJwt
         {
             new Claim(JwtRegisteredClaimNames.Sub, estudiante.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, estudiante.Email),
+            new Claim(JwtRegisteredClaimNames.Name, estudiante.Nombre),
             new Claim("studentId", estudiante.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };

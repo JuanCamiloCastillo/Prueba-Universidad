@@ -1,1 +1,41 @@
-// Estilos específicos del login viven en el global styles.scss (auth-wrapper, auth-card)
+.auth-card__logo {
+  display: block;
+  margin: 0 auto 1rem;
+  max-height: 72px;
+  width: auto;
+  object-fit: contain;
+}
+
+.input-password-wrapper {
+  position: relative;
+
+  .form-control {
+    padding-right: 2.75rem;
+  }
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.625rem;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: var(--color-gray-400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}

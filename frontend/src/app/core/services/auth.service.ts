@@ -29,7 +29,7 @@ export class AuthService {
     return localStorage.getItem(this.TOKEN_KEY);
   }
 
-  /** POST /api/auth/login → { token } */
+  /** POST /api/auth/login → { token } — el nombre ya viene en el claim 'name' del JWT */
   login(data: LoginRequest) {
     return this.http
       .post<{ token: string }>(`${environment.apiUrl}/auth/login`, data)
@@ -38,13 +38,11 @@ export class AuthService {
           const decoded = this.decodeToken(res.token);
           if (!decoded) return;
 
-          // Si ya tenemos datos del mismo usuario en localStorage, conservamos el nombre
-          const stored = this.loadStoredStudent();
           const student: StudentInfo = {
             id: decoded.id,
             email: decoded.email,
-            nombre: stored?.id === decoded.id ? stored.nombre : decoded.email.split('@')[0],
-            apellido: stored?.id === decoded.id ? stored.apellido : ''
+            nombre: decoded.nombre,
+            apellido: ''
           };
           this.saveSession(res.token, student);
         })
@@ -77,13 +75,14 @@ export class AuthService {
       );
   }
 
-  /** Decodifica el payload JWT para extraer studentId y email (sin verificar firma) */
-  private decodeToken(token: string): { id: number; email: string } | null {
+  /** Decodifica el payload JWT para extraer id, email y nombre (sin verificar firma) */
+  private decodeToken(token: string): { id: number; email: string; nombre: string } | null {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       return {
         id: Number(payload.studentId ?? payload.sub),
-        email: payload.email
+        email: payload.email,
+        nombre: payload.name ?? payload.nombre ?? payload.email.split('@')[0]
       };
     } catch {
       return null;
