@@ -1,9 +1,11 @@
 -- Stored procedure: sp_EnrollStudent
--- Enforces enrollment business rules atomically:
---   50001 = student already enrolled in 3 subjects
---   50002 = student already has a class with this professor
---   50003 = subject has reached its max capacity
---   50004 = student is already enrolled in this subject
+-- Impone las reglas de negocio de inscripcion de forma atomica.
+-- Usa UPDLOCK + ROWLOCK para evitar condiciones de carrera en inscripciones simultaneas.
+-- Codigos de error (SqlException.Number en C#):
+--   50001 = estudiante ya inscrito en 3 materias
+--   50002 = estudiante ya tiene clase con ese profesor
+--   50003 = materia sin cupo disponible
+--   50004 = estudiante ya inscrito en esa materia
 
 IF OBJECT_ID('dbo.sp_EnrollStudent', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_EnrollStudent;
@@ -19,54 +21,62 @@ BEGIN
 
     BEGIN TRANSACTION;
 
-    -- Rule 1: student cannot enroll in more than 3 subjects
-    IF (SELECT COUNT(*) FROM Enrollments WHERE StudentId = @StudentId) >= 3
-    BEGIN
-        ROLLBACK;
-        RAISERROR('Student cannot enroll in more than 3 subjects.', 16, 1) WITH SETERROR;
-        RETURN 50001;
-    END;
+    BEGIN TRY
+        DECLARE @CupoActual     INT;
+        DECLARE @CapacidadMaxima INT;
+        DECLARE @IdProfesor      INT;
+        DECLARE @TotalMaterias   INT;
 
-    -- Rule 2: student cannot have two classes with the same professor
-    IF EXISTS (
-        SELECT 1
-        FROM Enrollments e
-        INNER JOIN Subjects s ON s.Id = e.SubjectId
-        WHERE e.StudentId = @StudentId
-          AND s.ProfessorId = (SELECT ProfessorId FROM Subjects WHERE Id = @SubjectId)
-    )
-    BEGIN
-        ROLLBACK;
-        RAISERROR('Student already has a class with this professor.', 16, 1) WITH SETERROR;
-        RETURN 50002;
-    END;
+        -- Bloqueo pesimista sobre la asignatura para evitar sobrecupo concurrente
+        SELECT
+            @CupoActual      = COUNT(i.Id),
+            @CapacidadMaxima = a.CapacidadMaxima,
+            @IdProfesor      = a.IdProfesor
+        FROM Asignaturas a WITH (UPDLOCK, ROWLOCK)
+        LEFT JOIN Inscripciones i ON i.IdAsignatura = a.Id
+        WHERE a.Id = @SubjectId
+        GROUP BY a.CapacidadMaxima, a.IdProfesor;
 
-    -- Rule 3: subject must not be at full capacity
-    IF (
-        SELECT COUNT(*) FROM Enrollments WHERE SubjectId = @SubjectId
-    ) >= (
-        SELECT MaxCapacity FROM Subjects WHERE Id = @SubjectId
-    )
-    BEGIN
-        ROLLBACK;
-        RAISERROR('Subject has reached its maximum capacity.', 16, 1) WITH SETERROR;
-        RETURN 50003;
-    END;
+        -- Bloqueo sobre las inscripciones del estudiante
+        SELECT @TotalMaterias = COUNT(*)
+        FROM Inscripciones WITH (UPDLOCK, ROWLOCK)
+        WHERE IdEstudiante = @StudentId;
 
-    -- Rule 4: student must not already be enrolled in this subject
-    IF EXISTS (
-        SELECT 1 FROM Enrollments
-        WHERE StudentId = @StudentId AND SubjectId = @SubjectId
-    )
-    BEGIN
-        ROLLBACK;
-        RAISERROR('Student is already enrolled in this subject.', 16, 1) WITH SETERROR;
-        RETURN 50004;
-    END;
+        -- Regla 1: max 3 materias por estudiante
+        IF @TotalMaterias >= 3
+            THROW 50001, 'No puedes inscribirte en mas de 3 materias.', 1;
 
-    INSERT INTO Enrollments (StudentId, SubjectId, EnrolledAt)
-    VALUES (@StudentId, @SubjectId, GETUTCDATE());
+        -- Regla 2: sin profesor duplicado
+        IF EXISTS (
+            SELECT 1
+            FROM Inscripciones i
+            INNER JOIN Asignaturas a ON a.Id = i.IdAsignatura
+            WHERE i.IdEstudiante = @StudentId
+              AND a.IdProfesor = @IdProfesor
+        )
+            THROW 50002, 'Ya tienes una clase con este profesor.', 1;
 
-    COMMIT;
+        -- Regla 3: verificar cupo disponible
+        IF @CupoActual >= @CapacidadMaxima
+            THROW 50003, 'Esta materia ya alcanzo su cupo maximo.', 1;
+
+        -- Regla 4: ya inscrito en esta materia
+        IF EXISTS (
+            SELECT 1 FROM Inscripciones
+            WHERE IdEstudiante = @StudentId AND IdAsignatura = @SubjectId
+        )
+            THROW 50004, 'Ya estas inscrito en esta materia.', 1;
+
+        INSERT INTO Inscripciones (IdEstudiante, IdAsignatura, FechaInscripcion)
+        VALUES (@StudentId, @SubjectId, GETUTCDATE());
+
+        COMMIT TRANSACTION;
+
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
 END;
 GO
