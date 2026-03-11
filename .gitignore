@@ -3,3 +3,5 @@
 **/obj/
 **/packages/
 *.user
+**/publish*/
+**/publish_test/
