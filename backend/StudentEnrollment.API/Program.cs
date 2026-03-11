@@ -72,7 +72,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("PoliticaFrontend", policy =>
     {
-        policy.WithOrigins(builder.Configuration["AllowedOrigins"] ?? "http://localhost:4200")
+        var origenes = (builder.Configuration["AllowedOrigins"] ?? "http://localhost:4200")
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        policy.WithOrigins(origenes)
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -105,7 +107,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
+
 app.UseCors("PoliticaFrontend");
 app.UseMiddleware<MiddlewareExcepciones>();
 app.UseRateLimiter();
