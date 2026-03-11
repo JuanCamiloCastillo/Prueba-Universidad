@@ -108,6 +108,4 @@ ng serve
 - **Frontend**: `https://red-island-0a1fcd51e.1.azurestaticapps.net/auth/login`
 
 ## GitHub Secrets Required
-- `AZURE_API_APP_NAME` - Azure App Service name
-- `AZURE_API_PUBLISH_PROFILE` - Azure App Service publish profile
 - `AZURE_STATIC_WEB_APPS_API_TOKEN` - Azure Static Web Apps deployment token
