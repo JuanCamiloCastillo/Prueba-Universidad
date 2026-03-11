@@ -1,0 +1,90 @@
+<div class="page-container">
+  <div class="page-header">
+    @if (student(); as s) {
+      <h1>Bienvenido, <span class="text-primary">{{ s.nombre }}</span> 👋</h1>
+      <p class="text-muted">{{ s.email }}</p>
+    }
+  </div>
+
+  <!-- Tarjetas de resumen -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-card__icon">📚</div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ enrolledCount() }} / {{ maxSubjects }}</span>
+        <span class="stat-card__label">Materias matriculadas</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card__icon">⭐</div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalCredits() }} / {{ maxCredits }}</span>
+        <span class="stat-card__label">Créditos acumulados</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card__icon">🔓</div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ maxSubjects - enrolledCount() }}</span>
+        <span class="stat-card__label">Cupos disponibles</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de progreso de créditos -->
+  @if (!loading() && enrolledCount() > 0) {
+    <div class="credit-progress">
+      <div class="credit-progress__label">
+        <span>Progreso de créditos</span>
+        <span>{{ totalCredits() }} / {{ maxCredits }} créditos</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-bar__fill" [style.width.%]="creditProgress()"></div>
+      </div>
+    </div>
+  }
+
+  <!-- Lista de materias matriculadas -->
+  <div class="section">
+    <div class="section__header">
+      <h2>Mis materias</h2>
+      @if (enrolledCount() < maxSubjects) {
+        <a routerLink="/matricula" class="btn btn--primary btn--sm">+ Agregar materia</a>
+      }
+    </div>
+
+    @if (loading()) {
+      <div class="loading-state">Cargando matrículas…</div>
+    } @else if (error()) {
+      <div class="alert alert--error">{{ error() }}</div>
+    } @else if (enrollments().length === 0) {
+      <div class="empty-state">
+        <p>No tienes materias matriculadas aún.</p>
+        <a routerLink="/matricula" class="btn btn--primary">Ir a matrícula</a>
+      </div>
+    } @else {
+      <div class="enrollment-list">
+        @for (enrollment of enrollments(); track enrollment.id) {
+          <div class="enrollment-item">
+            <div class="enrollment-item__info">
+              <h3 class="enrollment-item__name">{{ enrollment.nombreAsignatura }}</h3>
+              <p class="enrollment-item__professor">👤 {{ enrollment.nombreProfesor }}</p>
+            </div>
+            <div class="enrollment-item__right">
+              <span class="badge badge--credits">3 créditos</span>
+              <a
+                routerLink="/companeros"
+                [queryParams]="{ subjectId: enrollment.idAsignatura }"
+                class="btn btn--ghost btn--sm"
+              >
+                Ver compañeros
+              </a>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

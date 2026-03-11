@@ -1,0 +1,27 @@
+<nav class="navbar">
+  <div class="navbar__brand">
+    <span class="navbar__logo">🎓</span>
+    <span class="navbar__title">Sistema de Matrícula</span>
+  </div>
+
+  <ul class="navbar__links">
+    <li>
+      <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+    </li>
+    <li>
+      <a routerLink="/matricula" routerLinkActive="active">Matrícula</a>
+    </li>
+    <li>
+      <a routerLink="/companeros" routerLinkActive="active">Compañeros</a>
+    </li>
+  </ul>
+
+  <div class="navbar__user">
+    @if (authService.currentStudent(); as student) {
+      <span class="navbar__student-name">
+        {{ student.nombre ? (student.nombre + ' ' + student.apellido).trim() : student.email }}
+      </span>
+    }
+    <button class="btn btn--ghost-inverse" (click)="logout()">Cerrar sesión</button>
+  </div>
+</nav>

@@ -1,0 +1,7 @@
+.main-content {
+  min-height: calc(100vh - 64px);
+
+  &--no-nav {
+    min-height: 100vh;
+  }
+}

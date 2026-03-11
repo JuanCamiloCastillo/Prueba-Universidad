@@ -1,0 +1,110 @@
+<div class="auth-wrapper">
+  <div class="auth-card auth-card--wide">
+    <div class="auth-card__header">
+      <span class="auth-card__icon">🎓</span>
+      <h1 class="auth-card__title">Crear cuenta</h1>
+      <p class="auth-card__subtitle">Sistema de Registro y Matrícula</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form" novalidate>
+      @if (errorMsg()) {
+        <div class="alert alert--error">{{ errorMsg() }}</div>
+      }
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input
+            id="nombre"
+            type="text"
+            formControlName="nombre"
+            class="form-control"
+            [class.form-control--error]="invalid('nombre')"
+            placeholder="Juan"
+            autocomplete="given-name"
+          />
+          @if (invalid('nombre')) {
+            <span class="form-error">Mínimo 2 caracteres.</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="apellido" class="form-label">Apellido</label>
+          <input
+            id="apellido"
+            type="text"
+            formControlName="apellido"
+            class="form-control"
+            [class.form-control--error]="invalid('apellido')"
+            placeholder="Pérez"
+            autocomplete="family-name"
+          />
+          @if (invalid('apellido')) {
+            <span class="form-error">Mínimo 2 caracteres.</span>
+          }
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="form-label">Correo electrónico</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="form-control"
+          [class.form-control--error]="invalid('email')"
+          placeholder="estudiante@universidad.edu"
+          autocomplete="email"
+        />
+        @if (invalid('email')) {
+          <span class="form-error">Ingresa un correo electrónico válido.</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Contraseña</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          class="form-control"
+          [class.form-control--error]="invalid('password')"
+          placeholder="Mínimo 8 caracteres"
+          autocomplete="new-password"
+        />
+        @if (invalid('password')) {
+          <span class="form-error">La contraseña debe tener mínimo 8 caracteres.</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword" class="form-label">Confirmar contraseña</label>
+        <input
+          id="confirmPassword"
+          type="password"
+          formControlName="confirmPassword"
+          class="form-control"
+          [class.form-control--error]="form.hasError('passwordMismatch') && form.get('confirmPassword')?.touched"
+          placeholder="Repite tu contraseña"
+          autocomplete="new-password"
+        />
+        @if (form.hasError('passwordMismatch') && form.get('confirmPassword')?.touched) {
+          <span class="form-error">Las contraseñas no coinciden.</span>
+        }
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn--primary btn--full"
+        [disabled]="loading()"
+      >
+        @if (loading()) { Creando cuenta… } @else { Registrarse }
+      </button>
+    </form>
+
+    <p class="auth-card__footer">
+      ¿Ya tienes cuenta?
+      <a routerLink="/auth/login">Inicia sesión aquí</a>
+    </p>
+  </div>
+</div>
