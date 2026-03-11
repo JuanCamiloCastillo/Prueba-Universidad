@@ -104,8 +104,8 @@ ng serve
 ```
 
 ## Deployment URLs
-- **Backend API**: `https://YOUR_AZURE_API_APP_NAME.azurewebsites.net`
-- **Frontend**: `https://YOUR_AZURE_STATIC_WEB_APP_URL.azurestaticapps.net`
+- **Backend API**: `https://prueba-universidad-production-c741.up.railway.app/swagger/index.html`
+- **Frontend**: `https://red-island-0a1fcd51e.1.azurestaticapps.net/auth/login`
 
 ## GitHub Secrets Required
 - `AZURE_API_APP_NAME` - Azure App Service name
