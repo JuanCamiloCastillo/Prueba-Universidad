@@ -8,7 +8,7 @@ using StudentEnrollment.Application.Features.Enrollments.Queries;
 namespace StudentEnrollment.API.Controllers;
 
 [ApiController]
-[Route("api/enrollments")]
+[Route("api/inscripciones")]
 [Authorize]
 public class ControladorInscripciones : ControllerBase
 {

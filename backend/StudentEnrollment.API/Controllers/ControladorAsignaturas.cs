@@ -6,7 +6,7 @@ using StudentEnrollment.Application.Features.Subjects.Queries;
 namespace StudentEnrollment.API.Controllers;
 
 [ApiController]
-[Route("api/subjects")]
+[Route("api/asignaturas")]
 [Authorize]
 public class ControladorAsignaturas : ControllerBase
 {

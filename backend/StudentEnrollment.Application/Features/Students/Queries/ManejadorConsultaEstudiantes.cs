@@ -17,14 +17,20 @@ public class ManejadorConsultaEstudiantes : IRequestHandler<ConsultaEstudiantes,
 
     public async Task<IEnumerable<DtoEstudiantePublico>> Handle(ConsultaEstudiantes request, CancellationToken cancellationToken)
     {
-        var enCache = await _cache.ObtenerAsync<List<DtoEstudiantePublico>>(ClaveCache, cancellationToken);
-        if (enCache is not null)
-            return enCache;
+        try
+        {
+            var enCache = await _cache.ObtenerAsync<List<DtoEstudiantePublico>>(ClaveCache, cancellationToken);
+            if (enCache is not null)
+                return enCache;
+        }
+        catch { /* Redis no disponible, continua con BD */ }
 
         var estudiantes = await _repositorioEstudiantes.ObtenerTodosAsync(cancellationToken);
         var resultado = estudiantes.Select(s => new DtoEstudiantePublico(s.Id, s.Nombre, s.Apellido)).ToList();
 
-        await _cache.EstablecerAsync(ClaveCache, resultado, TimeSpan.FromMinutes(5), cancellationToken);
+        try { await _cache.EstablecerAsync(ClaveCache, resultado, TimeSpan.FromMinutes(5), cancellationToken); }
+        catch { /* Redis no disponible, se omite el guardado en cache */ }
+
         return resultado;
     }
 }

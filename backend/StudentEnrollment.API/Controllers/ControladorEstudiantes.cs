@@ -6,7 +6,7 @@ using StudentEnrollment.Application.Features.Students.Queries;
 namespace StudentEnrollment.API.Controllers;
 
 [ApiController]
-[Route("api/students")]
+[Route("api/estudiantes")]
 [Authorize]
 public class ControladorEstudiantes : ControllerBase
 {
