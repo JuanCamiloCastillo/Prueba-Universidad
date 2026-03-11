@@ -15,10 +15,18 @@ public static class InyeccionDependencias
         services.AddDbContext<ContextoBD>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-        services.AddStackExchangeRedisCache(options =>
+        var redisConfig = configuration.GetConnectionString("Redis");
+        if (!string.IsNullOrWhiteSpace(redisConfig))
         {
-            options.Configuration = configuration.GetConnectionString("Redis");
-        });
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = $"{redisConfig},connectTimeout=1000,abortConnect=false";
+            });
+        }
+        else
+        {
+            services.AddDistributedMemoryCache();
+        }
 
         services.AddScoped<IRepositorioEstudiantes, RepositorioEstudiantes>();
         services.AddScoped<IRepositorioAsignaturas, RepositorioAsignaturas>();

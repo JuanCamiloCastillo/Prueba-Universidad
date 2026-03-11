@@ -30,7 +30,7 @@ public class ControladorInscripciones : ControllerBase
         return Ok(new { mensaje = "Inscripción exitosa." });
     }
 
-    [HttpGet("my")]
+    [HttpGet]
     public async Task<IActionResult> ObtenerMisInscripciones(CancellationToken ct)
     {
         var idEstudiante = ObtenerIdEstudiante();
@@ -38,7 +38,7 @@ public class ControladorInscripciones : ControllerBase
         return Ok(resultado);
     }
 
-    [HttpGet("classmates/{idAsignatura:int}")]
+    [HttpGet("companeros/{idAsignatura:int}")]
     public async Task<IActionResult> ObtenerCompaneros(int idAsignatura, CancellationToken ct)
     {
         var idEstudiante = ObtenerIdEstudiante();
