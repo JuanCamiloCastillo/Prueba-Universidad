@@ -12,11 +12,9 @@ public class ManejadorConsultaCompaneros : IRequestHandler<ConsultaCompaneros, I
         _repositorioInscripciones = repositorioInscripciones;
     }
 
-    public async Task<IEnumerable<DtoCompanero>> Handle(ConsultaCompaneros request, CancellationToken cancellationToken)
-    {
-        var inscripciones = await _repositorioInscripciones.ObtenerPorIdAsignaturaAsync(request.IdAsignatura, cancellationToken);
-        return inscripciones
-            .Where(e => e.IdEstudiante != request.IdEstudianteSolicitante)
-            .Select(e => new DtoCompanero(e.Estudiante.Nombre, e.Estudiante.Apellido));
-    }
+    public Task<IEnumerable<DtoCompanero>> Handle(ConsultaCompaneros request, CancellationToken cancellationToken)
+        => _repositorioInscripciones.ObtenerCompanerosAsync(
+               request.IdAsignatura,
+               request.IdEstudianteSolicitante,
+               cancellationToken);
 }

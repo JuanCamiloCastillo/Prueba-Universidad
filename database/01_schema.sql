@@ -1,42 +1,47 @@
--- 01_schema.sql: Create tables for StudentEnrollment database
+-- 01_schema.sql: Tablas del sistema de inscripcion estudiantil
+-- Nombres en espanol para coincidir con entidades C#
 
-CREATE TABLE Professors (
-    Id INT IDENTITY(1,1) PRIMARY KEY,
-    Name NVARCHAR(150) NOT NULL,
-    Email NVARCHAR(200) NOT NULL
+CREATE TABLE Profesores (
+    Id     INT           IDENTITY(1,1) PRIMARY KEY,
+    Nombre NVARCHAR(150) NOT NULL,
+    Email  NVARCHAR(200) NOT NULL
 );
+GO
 
-CREATE TABLE Subjects (
-    Id INT IDENTITY(1,1) PRIMARY KEY,
-    Name NVARCHAR(150) NOT NULL,
-    Credits INT NOT NULL DEFAULT 3,
-    ProfessorId INT NOT NULL,
-    MaxCapacity INT NOT NULL DEFAULT 30,
-    CONSTRAINT FK_Subjects_Professors FOREIGN KEY (ProfessorId) REFERENCES Professors(Id)
+CREATE TABLE Estudiantes (
+    Id             INT           IDENTITY(1,1) PRIMARY KEY,
+    Nombre         NVARCHAR(100) NOT NULL,
+    Apellido       NVARCHAR(100) NOT NULL,
+    Email          NVARCHAR(200) NOT NULL,
+    HashContrasena NVARCHAR(500) NOT NULL,
+    FechaCreacion  DATETIME2     NOT NULL DEFAULT GETUTCDATE(),
+    VersionFila    ROWVERSION    NOT NULL
 );
+GO
 
-CREATE TABLE Students (
-    Id INT IDENTITY(1,1) PRIMARY KEY,
-    FirstName NVARCHAR(100) NOT NULL,
-    LastName NVARCHAR(100) NOT NULL,
-    Email NVARCHAR(200) NOT NULL,
-    PasswordHash NVARCHAR(500) NOT NULL,
-    CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
-    RowVersion ROWVERSION NOT NULL
+CREATE TABLE Asignaturas (
+    Id              INT           IDENTITY(1,1) PRIMARY KEY,
+    Nombre          NVARCHAR(150) NOT NULL,
+    Creditos        INT           NOT NULL DEFAULT 3,
+    IdProfesor      INT           NOT NULL,
+    CapacidadMaxima INT           NOT NULL DEFAULT 30,
+    CONSTRAINT FK_Asignaturas_Profesores FOREIGN KEY (IdProfesor) REFERENCES Profesores(Id)
 );
+GO
 
-CREATE TABLE Enrollments (
-    Id INT IDENTITY(1,1) PRIMARY KEY,
-    StudentId INT NOT NULL,
-    SubjectId INT NOT NULL,
-    EnrolledAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
-    CONSTRAINT FK_Enrollments_Students FOREIGN KEY (StudentId) REFERENCES Students(Id),
-    CONSTRAINT FK_Enrollments_Subjects FOREIGN KEY (SubjectId) REFERENCES Subjects(Id),
-    CONSTRAINT UQ_Enrollment_Student_Subject UNIQUE (StudentId, SubjectId)
+CREATE TABLE Inscripciones (
+    Id               INT       IDENTITY(1,1) PRIMARY KEY,
+    IdEstudiante     INT       NOT NULL,
+    IdAsignatura     INT       NOT NULL,
+    FechaInscripcion DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+    CONSTRAINT FK_Inscripciones_Estudiantes FOREIGN KEY (IdEstudiante) REFERENCES Estudiantes(Id),
+    CONSTRAINT FK_Inscripciones_Asignaturas FOREIGN KEY (IdAsignatura) REFERENCES Asignaturas(Id),
+    CONSTRAINT UQ_Inscripcion UNIQUE (IdEstudiante, IdAsignatura)
 );
+GO
 
--- Indexes
-CREATE UNIQUE INDEX IX_Students_Email ON Students(Email);
-CREATE INDEX IX_Enrollments_StudentId ON Enrollments(StudentId);
-CREATE INDEX IX_Enrollments_SubjectId ON Enrollments(SubjectId);
-CREATE INDEX IX_Subjects_ProfessorId ON Subjects(ProfessorId);
+CREATE UNIQUE INDEX IX_Estudiantes_Email          ON Estudiantes(Email);
+CREATE INDEX        IX_Inscripciones_IdEstudiante ON Inscripciones(IdEstudiante);
+CREATE INDEX        IX_Inscripciones_IdAsignatura ON Inscripciones(IdAsignatura);
+CREATE INDEX        IX_Asignaturas_IdProfesor     ON Asignaturas(IdProfesor);
+GO

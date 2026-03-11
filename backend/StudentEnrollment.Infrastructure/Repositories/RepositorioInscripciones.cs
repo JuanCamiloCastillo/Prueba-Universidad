@@ -1,5 +1,6 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using StudentEnrollment.Application.Features.Enrollments.Queries;
 using StudentEnrollment.Application.Interfaces;
 using StudentEnrollment.Domain.Entities;
 using StudentEnrollment.Domain.Exceptions;
@@ -56,5 +57,32 @@ public class RepositorioInscripciones : IRepositorioInscripciones
         {
             throw new ExcepcionYaInscrito();
         }
+    }
+
+    public async Task<IEnumerable<DtoCompanero>> ObtenerCompanerosAsync(
+        int idAsignatura, int idEstudianteSolicitante, CancellationToken ct = default)
+    {
+        var resultado = new List<DtoCompanero>();
+        var conexion = _contexto.Database.GetDbConnection();
+
+        await conexion.OpenAsync(ct);
+        await using var cmd = conexion.CreateCommand();
+        cmd.CommandText = "EXEC sp_GetClassmates @SubjectId, @RequestingStudentId";
+
+        var pSubject = cmd.CreateParameter();
+        pSubject.ParameterName = "@SubjectId";
+        pSubject.Value = idAsignatura;
+        cmd.Parameters.Add(pSubject);
+
+        var pStudent = cmd.CreateParameter();
+        pStudent.ParameterName = "@RequestingStudentId";
+        pStudent.Value = idEstudianteSolicitante;
+        cmd.Parameters.Add(pStudent);
+
+        await using var reader = await cmd.ExecuteReaderAsync(ct);
+        while (await reader.ReadAsync(ct))
+            resultado.Add(new DtoCompanero(reader.GetString(0), reader.GetString(1)));
+
+        return resultado;
     }
 }
