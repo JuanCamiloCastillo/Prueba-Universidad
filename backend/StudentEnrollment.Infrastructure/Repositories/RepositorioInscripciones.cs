@@ -59,6 +59,18 @@ public class RepositorioInscripciones : IRepositorioInscripciones
         }
     }
 
+    public async Task EliminarAsync(int idInscripcion, int idEstudiante, CancellationToken ct = default)
+    {
+        var inscripcion = await _contexto.Inscripciones
+            .FirstOrDefaultAsync(i => i.Id == idInscripcion && i.IdEstudiante == idEstudiante, ct);
+
+        if (inscripcion is null)
+            throw new ExcepcionDominio("Inscripción no encontrada.");
+
+        _contexto.Inscripciones.Remove(inscripcion);
+        await _contexto.SaveChangesAsync(ct);
+    }
+
     public async Task<IEnumerable<DtoCompanero>> ObtenerCompanerosAsync(
         int idAsignatura, int idEstudianteSolicitante, CancellationToken ct = default)
     {

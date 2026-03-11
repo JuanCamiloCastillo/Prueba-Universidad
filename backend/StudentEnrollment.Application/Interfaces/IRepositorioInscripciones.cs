@@ -8,5 +8,6 @@ public interface IRepositorioInscripciones
     Task<IEnumerable<Inscripcion>> ObtenerPorIdEstudianteAsync(int idEstudiante, CancellationToken ct = default);
     Task<IEnumerable<Inscripcion>> ObtenerPorIdAsignaturaAsync(int idAsignatura, CancellationToken ct = default);
     Task InscribirEstudianteAsync(int idEstudiante, int idAsignatura, CancellationToken ct = default);
+    Task EliminarAsync(int idInscripcion, int idEstudiante, CancellationToken ct = default);
     Task<IEnumerable<DtoCompanero>> ObtenerCompanerosAsync(int idAsignatura, int idEstudianteSolicitante, CancellationToken ct = default);
 }

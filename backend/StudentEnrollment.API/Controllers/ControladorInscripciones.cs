@@ -45,6 +45,14 @@ public class ControladorInscripciones : ControllerBase
         var resultado = await _mediador.Send(new ConsultaCompaneros(idAsignatura, idEstudiante), ct);
         return Ok(resultado);
     }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Eliminar(int id, CancellationToken ct)
+    {
+        var idEstudiante = ObtenerIdEstudiante();
+        await _mediador.Send(new ComandoEliminarInscripcion(id, idEstudiante), ct);
+        return NoContent();
+    }
 }
 
 public record SolicitudInscripcion(int IdAsignatura);
